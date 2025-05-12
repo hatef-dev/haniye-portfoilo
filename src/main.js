@@ -44,3 +44,15 @@ const animate = () => {
 
 console.log(renderer);
 animate();
+
+
+window.addEventListener("scroll", (e) => {
+  const scrollX = window.scrollX / window.innerWidth;
+  camera.position.z = -1 - (scrollX * 3.5); // Starting from -1 (initial position) and adding scroll effect
+  console.log({
+    scrollY: window.scrollY,           // Vertical scroll position
+    scrollX: scrollX,                  // Normalized horizontal scroll position
+    innerHeight: window.innerHeight,   // Viewport height
+    outerHeight: window.outerHeight,   // Browser window height
+  });
+});
