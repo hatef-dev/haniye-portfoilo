@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { GUI } from "lil-gui";
+import { context } from "three/tsl";
 
 const gui = new GUI();
 
@@ -14,7 +14,12 @@ loader.load("./models/1.glb", (gltf) => {
   gltf.scene.scale.set(2, 2, 2);
 });
 
-const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(
+  35,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100
+);
 camera.position.set(2.6, 0.53, -1);
 camera.rotation.y = Math.PI / 2;
 scene.add(camera);
@@ -27,7 +32,6 @@ const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(1, 1, 1);
 scene.add(light);
 
-
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
   antialias: true,
@@ -36,23 +40,37 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
 
-
 const animate = () => {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 };
 
-console.log(renderer);
 animate();
+let maxCameraOffset = -7;
+const content = document.querySelector("main");
+let scrollX = 0;
 
+content.addEventListener("wheel", (e) => {
+  e.preventDefault(); // Prevent default scroll behavior
+  if (window.innerWidth < 1920) {
+    maxCameraOffset = -8.9;
+  }
 
-window.addEventListener("scroll", (e) => {
-  const scrollX = window.scrollX / window.innerWidth;
-  camera.position.z = -1 - (scrollX * 3.5); // Starting from -1 (initial position) and adding scroll effect
+  // Make scroll speed more responsive
+  let scrollAmount = e.deltaY * 0.5; // Reduce the base scroll amount
+  content.scrollLeft += scrollAmount;
+  
+  // Calculate scroll progress (0 to 1)
+  const scrollProgress = content.scrollLeft / (content.scrollWidth - content.clientWidth);
+
+  // Smoother camera movement with easing
+// Reduced max offset for smoother movement
+  camera.position.z = -1 + scrollProgress * maxCameraOffset;
+
+  // Log for debugging
   console.log({
-    scrollY: window.scrollY,           // Vertical scroll position
-    scrollX: scrollX,                  // Normalized horizontal scroll position
-    innerHeight: window.innerHeight,   // Viewport height
-    outerHeight: window.outerHeight,   // Browser window height
+    scrollProgress,
+    cameraZ: camera.position.z,
+    scrollLeft: content.scrollLeft
   });
 });
