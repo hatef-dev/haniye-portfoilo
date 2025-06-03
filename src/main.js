@@ -1,76 +1,91 @@
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { GUI } from "lil-gui";
-import { context } from "three/tsl";
-
-const gui = new GUI();
+import * as THREE from 'three';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/Addons.js';
+import { GUI } from 'lil-gui';
+import gsap from 'gsap';
 
 const scene = new THREE.Scene();
-const canvas = document.querySelector("#webgl");
-const loader = new GLTFLoader();
 
-loader.load("./models/1.glb", (gltf) => {
-  scene.add(gltf.scene);
-  gltf.scene.scale.set(2, 2, 2);
-});
+const gui = new GUI();
+const canvas = document.querySelector('canvas');
 
-const camera = new THREE.PerspectiveCamera(
-  35,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  100
-);
-camera.position.set(2.6, 0.53, -1);
+const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
+}
+
+const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 1000);
+camera.position.x = 1.24;
+camera.position.y = 0.3;
+camera.position.z = -0.15;
 camera.rotation.y = Math.PI / 2;
+const cameraFolder = gui.addFolder('Camera');
+cameraFolder.add(camera.position, 'x').min(0).max(10).step(0.01);
+cameraFolder.add(camera.position, 'y').min(0).max(10).step(0.01);
+cameraFolder.add(camera.position, 'z').min(-20).max(10).step(0.01);
+
+// cameraFolder.add(camera.rotation, 'z').min(0).max(100).step(0.01);
+
+// camera.rotation.x = -Math.PI / 2;
 scene.add(camera);
 
-gui.add(camera.position, "x").min(0).max(10).step(0.01);
-gui.add(camera.position, "y").min(0).max(10).step(0.01);
-gui.add(camera.position, "z").min(0).max(10).step(0.01);
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
 
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(1, 1, 1);
-scene.add(light);
+const loader = new GLTFLoader();
+loader.load('./models/Test.glb', function(gltf) {
+    const model = gltf.scene;
+    scene.add(model);
+});
+
+const planeGeometry = new THREE.PlaneGeometry(0.5, 0.5)
+const planeMaterial = new THREE.MeshBasicMaterial({ color: "red"})
+const plane = new THREE.Mesh(planeGeometry, planeMaterial)
+scene.add(plane)
+
+const point = [
+    {
+        position: new THREE.Vector3()
+    }
+]
+
+
+
+const DirectionalLight = new THREE.DirectionalLight(0xffffff, 1);
+DirectionalLight.position.set(1, 1, 1);
+scene.add(DirectionalLight);
+
+const lightFolder = gui.addFolder('Light');
+lightFolder.add(DirectionalLight, 'intensity').min(0).max(10).step(0.01);
+
 
 const renderer = new THREE.WebGLRenderer({
-  canvas: canvas,
-  antialias: true,
-  alpha: true,
+    canvas: document.querySelector('canvas'),
+    antialias: true,
+    alpha: true,
 });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.render(scene, camera);
+renderer.setSize(sizes.width, sizes.height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-const animate = () => {
-  requestAnimationFrame(animate);
-  renderer.render(scene, camera);
-};
+window.addEventListener('resize', () => {
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(sizes.width, sizes.height);
+});
+
+const clock = new THREE.Clock();
+function animate() {
+    const elapsedTime = clock.getElapsedTime();
+    // controls.update();
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(animate);
+}
 
 animate();
-let maxCameraOffset = -7;
-const content = document.querySelector("main");
-let scrollX = 0;
 
-content.addEventListener("wheel", (e) => {
-  e.preventDefault(); // Prevent default scroll behavior
-  if (window.innerWidth < 1920) {
-    maxCameraOffset = -8.9;
-  }
-
-  // Make scroll speed more responsive
-  let scrollAmount = e.deltaY * 0.5; // Reduce the base scroll amount
-  content.scrollLeft += scrollAmount;
-  
-  // Calculate scroll progress (0 to 1)
-  const scrollProgress = content.scrollLeft / (content.scrollWidth - content.clientWidth);
-
-  // Smoother camera movement with easing
-// Reduced max offset for smoother movement
-  camera.position.z = -1 + scrollProgress * maxCameraOffset;
-
-  // Log for debugging
-  console.log({
-    scrollProgress,
-    cameraZ: camera.position.z,
-    scrollLeft: content.scrollLeft
-  });
+window.addEventListener('wheel', (event) => {
+    camera.position.z -= event.deltaY * 0.001;
+    console.log(camera.position.z);
 });
