@@ -1,54 +1,84 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap');
+.rock-salt-regular {
+  font-family: "Rock Salt", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+html, body {
   margin: 0;
-  background-color: transparent;
-  color: red;
-  /* overflow: hidden; */
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
 }
 
 canvas {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
 }
 
-main {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+.wow-icon {
+  position: fixed;
+
+  z-index: 1;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-main::-webkit-scrollbar {
-  display: none;
-}
 
-.content {
-  /* position: ; */
-  display: flex;
-  flex-direction: row;
-  overflow-x: scroll;
-  scrollbar-width: none; 
-  height: 100%;
-  width: max-content /* Make it wide enough to scroll horizontally */
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.content::-webkit-scrollbar {
-  display: none;
-}
-
-.section {
-  width: 100vw;
-  height: 100vh;
-}
-.container {
+.scrollDownButton {
+  position: fixed;
+  
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  width: 100%;
+  gap: 5px;
+  color: #000;
+}
+
+.SectionTitle {
+  position: fixed;
+  z-index: 1;
+  font-family: "Rock Salt", cursive;
+  font-size: 10px;
+  font-weight: 400;
+  font-style: normal;
+  color: #000;
+  width: 200px;
+  
+}
+.loading-bar
+{
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    background: #ffffff;
+    transform: scaleX(0.3);
+    transform-origin: top left;
+    transition: transform 0.5s;
+}
+
+.loading-bar.ended
+{
+    transform: scaleX(0);
+    transform-origin: 100% 0;
+    transition: transform 1.5s ease-in-out;
+}
+
+
+@media (max-width: 768px) {
+  .SectionTitle{
+    left: 20%;
+  }
+  /* .SectionTitle{
+    font-size: 5px;
+  } */
 }
