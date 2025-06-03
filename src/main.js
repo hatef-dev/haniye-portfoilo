@@ -29,7 +29,7 @@ const loadingManager = new THREE.LoadingManager(
 
     window.setTimeout(() => {
       sceneReady = true;
-    }, 2000);
+    }, 1500);
   },
 
   // Progress
@@ -99,12 +99,25 @@ const points = [
     {
       position: new THREE.Vector3(0, 0.15, 0.36) ,
       element: document.querySelector(".wow-icon"),
+    },
+    {
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.3, -0.35) : new THREE.Vector3(0, -0.3, -0.34) ,
+      element: document.querySelector(".buttonContainer"),
+    },
+    {
+      position: new THREE.Vector3(0, 0.13, -1.82) ,
+      element: document.querySelector(".helloIcon"),
+    },
+    {
+      position: new THREE.Vector3(0, 0.03, -1.58) ,
+      element: document.querySelector(".WhoAmI"),
     }
+
 ];
 
 
-debugPointPosition.add(points[2].position, "y").min(-10).max(10).step(0.01);
-debugPointPosition.add(points[2].position, "z").min(-10).max(10).step(0.01);
+debugPointPosition.add(points[5].position, "y").min(-10).max(10).step(0.01);
+debugPointPosition.add(points[5].position, "z").min(-10).max(10).step(0.01);
 
 const sizes = {
   width: window.innerWidth,

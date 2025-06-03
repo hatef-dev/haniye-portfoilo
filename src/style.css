@@ -1,12 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Rock+Salt&display=swap');
 .rock-salt-regular {
   font-family: "Rock Salt", cursive;
   font-weight: 400;
   font-style: normal;
 }
 
+.roboto-regular {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -30,10 +39,9 @@ canvas {
   z-index: 1;
 }
 
-
 .scrollDownButton {
   position: fixed;
-  
+
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -52,33 +60,111 @@ canvas {
   font-style: normal;
   color: #000;
   width: 200px;
-  
 }
-.loading-bar
-{
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    height: 2px;
-    background: #ffffff;
-    transform: scaleX(0.3);
-    transform-origin: top left;
-    transition: transform 0.5s;
+.loading-bar {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background: #ffffff;
+  transform: scaleX(0.3);
+  transform-origin: top left;
+  transition: transform 0.5s;
 }
 
-.loading-bar.ended
-{
-    transform: scaleX(0);
-    transform-origin: 100% 0;
-    transition: transform 1.5s ease-in-out;
+.loading-bar.ended {
+  transform: scaleX(0);
+  transform-origin: 100% 0;
+  transition: transform 1.5s ease-in-out;
 }
 
+/* button */
 
-@media (max-width: 768px) {
-  .SectionTitle{
-    left: 20%;
-  }
-  /* .SectionTitle{
-    font-size: 5px;
-  } */
+.buttonContainer {
+  position: fixed;
+}
+.btn {
+  font-family: "Roboto", sans-serif;
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+  padding: 10px 25px;
+  font-size: 14px;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 2px;
+  z-index: 0;
+  background: #000 !important;
+  -moz-transition: all 0.6s ease-out 0s;
+  -ms-transition: all 0.6s ease-out 0s;
+  -o-transition: all 0.6s ease-out 0s;
+  -webkit-transition: all 0.6s ease-out 0s;
+  transition: all 0.6s ease-out 0s;
+}
+.btn:after,
+.btn:before {
+  -moz-transition: all 0.4s ease-out 0s;
+  -ms-transition: all 0.4s ease-out 0s;
+  -o-transition: all 0.4s ease-out 0s;
+  -webkit-transition: all 0.4s ease-out 0s;
+  transition: all 0.4s ease-out 0s;
+}
+.btn + .btn {
+  margin-left: 25px;
+}
+.border {
+  background: none;
+  /* border: solid ; */
+  border-radius: 10px;
+}
+.effect6:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 0%;
+  background: #fff;
+}
+.effect6:before {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 0%;
+  background: #fff;
+}
+.effect6:hover {
+  color: #000;
+}
+.effect6:hover:after {
+  height: 50%;
+}
+.effect6:hover:before {
+  height: 50%;
+}
+
+/* button */
+
+
+.helloIcon{
+  position: fixed;
+  z-index: 1;
+}
+
+.WhoAmI{
+  position: fixed;
+  z-index: 1;
+  color: #000;
+  font-family: "Rock Salt", cursive;
+  width: 500px;
+  height: 300px;
+  font-size: 0.55em;
+}
+
+.MoreAboutMe{
+  margin-top: 15px;
 }
