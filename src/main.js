@@ -112,9 +112,16 @@ scene.add(overlay);
 
 let model;
 
+let earth;
 loader.load("./models/Test.glb", function (gltf) {
   model = gltf.scene;
-
+  model.traverse((child) => {
+    if(child instanceof THREE.Mesh){
+      if(child.name === "pSphere1"){
+        earth = child;
+      }
+    }
+  });
   scene.add(model);
 });
 
@@ -249,9 +256,12 @@ window.addEventListener("resize", () => {
     renderer.render(scene, camera);
 });
 
+const clock = new THREE.Clock();
 function animate() {
-  
-    
+  const elapsedTime = clock.getElapsedTime();
+    if(earth){
+      earth.rotation.z = elapsedTime * 0.5;
+    }
     if (sceneReady) {
         updateElementPositions();
     }
