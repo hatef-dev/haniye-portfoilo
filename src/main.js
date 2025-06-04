@@ -6,6 +6,7 @@ import gsap from "gsap";
 /**
  * Loaders
  */
+const gui = new GUI();
 const scene = new THREE.Scene();
 const loadingBarElement = document.querySelector(".loading-bar");
 let sceneReady = false;
@@ -20,17 +21,17 @@ const loadingManager = new THREE.LoadingManager(
         value: 0,
         delay: 1,
       });
-
+      
       // Update loadingBarElement
       loadingBarElement.classList.add("ended");
       loadingBarElement.style.transform = "";
     }, 500);
-
+    
     window.setTimeout(() => {
       sceneReady = true;
     }, 1500);
   },
-
+  
   // Progress
   (itemUrl, itemsLoaded, itemsTotal) => {
     // Calculate the progress and update the loadingBarElement
@@ -38,10 +39,49 @@ const loadingManager = new THREE.LoadingManager(
     loadingBarElement.style.transform = `scaleX(${progressRatio})`;
   }
 );
+// loaders
+const loader = new GLTFLoader(loadingManager);
+const textureLoader = new THREE.TextureLoader(loadingManager);
 
-const gui = new GUI();
+
 const canvas = document.querySelector("#webgl");
 
+/**
+ * Textures Plane
+ */
+const planeGeometry = new THREE.PlaneGeometry(0.5, 0.5);
+const planeMaterial1 = new THREE.MeshBasicMaterial({
+  color: "red",
+  // side: THREE.DoubleSide,
+});
+const planeMaterial2 = new THREE.MeshBasicMaterial({
+  color: "blue",
+  // side: THREE.DoubleSide,
+});
+
+const planeMaterial3 = new THREE.MeshBasicMaterial({
+  color: "green",
+  // side: THREE.DoubleSide,
+});
+
+const plane1 = new THREE.Mesh(planeGeometry, planeMaterial1);
+plane1.rotation.y = Math.PI / 2;
+plane1.position.set(0.03, 0.27, -3.24);
+plane1.scale.set(0.77, 0.58, 1);
+
+const plane2 = new THREE.Mesh(planeGeometry, planeMaterial2);
+plane2.rotation.y = Math.PI / 2;
+plane2.position.set(0.03, 0.27, -3.98);
+plane2.scale.set(0.77, 0.58, 0.58);
+
+const plane3 = new THREE.Mesh(planeGeometry, planeMaterial3);
+plane3.rotation.y = Math.PI / 2;
+plane3.position.set(0.03, 0.27, -4.73);
+plane3.scale.set(0.77, 0.58, 0.58);
+
+scene.add(plane1);
+scene.add(plane2);
+scene.add(plane3);
 /**
  * Overlay
  */
@@ -72,7 +112,6 @@ scene.add(overlay);
 
 let model;
 
-const loader = new GLTFLoader(loadingManager);
 loader.load("./models/Test.glb", function (gltf) {
   model = gltf.scene;
 
@@ -88,7 +127,7 @@ const points = [
 
 
     {
-        position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.19, -0.35) : new THREE.Vector3(0, -0.19, -0.25),
+        position: new THREE.Vector3(0, -0.19, -0.35),
         element: document.querySelector(".SectionTitle"),
     },
     {
@@ -145,12 +184,24 @@ scene.add(camera);
 // const controls = new OrbitControls(camera, canvas);
 // controls.enableDamping = true;
 
-const DirectionalLight = new THREE.DirectionalLight(0xffffff, 1);
-DirectionalLight.position.set(1, 1, 1);
-scene.add(DirectionalLight);
+const parameters = {
+  hemisphereLight: {
+    intensity: 5.5,
+    color1: 0xffffff,
+    color2: 0x575757,
+  },
+};
 
-const lightFolder = gui.addFolder("Light");
-lightFolder.add(DirectionalLight, "intensity").min(0).max(10).step(0.01);
+const hemisphereLight = new THREE.HemisphereLight(parameters.hemisphereLight.color1, parameters.hemisphereLight.color2, parameters.hemisphereLight.intensity);
+scene.add(hemisphereLight);
+
+gui.add(hemisphereLight, "intensity").min(0).max(10).step(0.01);
+gui.addColor(parameters.hemisphereLight, "color1").onChange((value) => {
+  hemisphereLight.color.set(value);
+});
+gui.addColor(parameters.hemisphereLight, "color2").onChange((value) => {
+  hemisphereLight.groundColor.set(value);
+});
 
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
@@ -214,8 +265,6 @@ animate();
 // Handle mouse wheel on desktop
 window.addEventListener("wheel", (event) => {
   // Calculate target position
-
-  
   const targetZ = camera.position.z - event.deltaY * 0.008;
   if(targetZ < -8.62){
     return;
