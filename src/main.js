@@ -1,5 +1,4 @@
 import * as THREE from "three";
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { GUI } from "lil-gui";
 import gsap from "gsap";
@@ -215,8 +214,15 @@ animate();
 // Handle mouse wheel on desktop
 window.addEventListener("wheel", (event) => {
   // Calculate target position
-  const targetZ = camera.position.z - event.deltaY * 0.008;
+
   
+  const targetZ = camera.position.z - event.deltaY * 0.008;
+  if(targetZ < -8.62){
+    return;
+  }
+  if(targetZ > 0){
+    return;
+  }
   // Animate to the target position
   gsap.to(camera.position, {
     z: targetZ,
