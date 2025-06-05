@@ -49,7 +49,10 @@ const loader = new GLTFLoader(loadingManager);
 const textureLoader = new THREE.TextureLoader(loadingManager);
 const textureFloor = textureLoader.load("./texture/Wall_Bake.jpg");
 const textureFloor2 = textureLoader.load("./texture/Wall_Bake1.jpg");
-
+const textureFloor3 = textureLoader.load("./texture/wood1.jpg");
+textureFloor3.wrapS = THREE.MirroredRepeatWrapping;
+textureFloor3.wrapT = THREE.MirroredRepeatWrapping;
+textureFloor3.mapping = THREE.EquirectangularReflectionMapping;
 const canvas = document.querySelector("#webgl");
 
 /**
@@ -114,11 +117,13 @@ const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial);
 scene.add(overlay);
 
 const parameters2 = {
-  blurAmount: 0.5,
+  blurAmount: 0.2,
   blurRadius: 0.0,
   color: 0x373739,
   clipBias: 0.001,
-  height: 0.001,
+  height: 0.09,
+  tDiffuse: textureFloor3,
+  reflectionStrength: 0.12,
 };
 
 let model;
@@ -137,34 +142,40 @@ loader.load("./models/Test.glb", function (gltf) {
 });
 const floorGeometry = new THREE.PlaneGeometry(1, 1);
 const floor = new Reflector(floorGeometry, {
-  clipBias: 0.001,
-  textureWidth: 2377,
+  clipBias: parameters2.clipBias,
+  textureWidth: 1024,
   color: "white",
-  textureHeight: 494,
+  textureHeight: 1024,
   shader: {
-    precision: "lowp",
+    precision: "highp",
     uniforms: {
       color: { value: new THREE.Color("white") },
-      tDiffuse: { value: null },
+      tDiffuse: { value: parameters2.tDiffuse },
+      reflectionStrength: { value: parameters2.reflectionStrength },
       tDepth: { value: null },
       textureMatrix: { value: new THREE.Matrix4() },
       blurAmount: { value: parameters2.blurAmount },
       blurRadius: { value: parameters2.blurRadius },
-      colorTexture: { value: null},
+      colorTexture: { value: textureFloor3},
+      heightTexture: { value: textureFloor3},
+      textureRepeat: { value: new THREE.Vector2(10, 10) } 
     },
     vertexShader: vertex,
     fragmentShader: fragment,
   },
 });
+
+const reflectionStrength = gui.addFolder("Reflection Strength");
+reflectionStrength.add(floor.material.uniforms.reflectionStrength, "value").min(0).max(1).step(0.01);
 scene.add(floor);
 
 floor.rotation.x = -Math.PI / 2;
 floor.position.set(0.520, 0.03, -4.484);
 floor.scale.set(2.620, 12.570, 1.000)
 
-gui.add(floor.position, "y").min(-10).max(10).step(0.01);
-gui.add(floor.position, "z").min(-10).max(10).step(0.01);
-gui.add(floor.position, "x").min(-10).max(10).step(0.01);
+
+
+
 
 /* point position */
 const debugPointPosition = gui.addFolder("Point Position");
@@ -376,7 +387,7 @@ function updateElementPositions() {
 let isScrolling = false;
 
 window.addEventListener("wheel", (event) => {
-  if (isScrolling) return; // جلوی اجرای چندباره رو می‌گیریم
+  if (isScrolling) return;
   isScrolling = true;
 
   const targetZ = camera.position.z - event.deltaY * 0.02;
@@ -393,7 +404,7 @@ window.addEventListener("wheel", (event) => {
       updateElementPositions();
     },
     onComplete: () => {
-      isScrolling = false; // دوباره اجازه اسکرول می‌ده
+      isScrolling = false; 
     },
   });
 });
@@ -412,7 +423,7 @@ window.addEventListener("touchmove", (event) => {
   const targetZ = camera.position.z - deltaY * 0.02;
   if (targetZ < -8.62 || targetZ > 1) return;
 
-  gsap.killTweensOf(camera.position); // جلوگیری از انیمیشن‌های تکراری
+  gsap.killTweensOf(camera.position); 
 
   gsap.to(camera.position, {
     z: targetZ,
@@ -423,7 +434,7 @@ window.addEventListener("touchmove", (event) => {
     },
   });
 
-  // برای اینکه حرکت بعدی درست محاسبه بشه
+  
   touchStartY = touchEndY;
 });
 
