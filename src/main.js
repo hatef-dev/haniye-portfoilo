@@ -52,16 +52,16 @@ const canvas = document.querySelector("#webgl");
 const planeGeometry = new THREE.PlaneGeometry(0.5, 0.5);
 const planeMaterial1 = new THREE.MeshBasicMaterial({
   color: "red",
-  // side: THREE.DoubleSide,
+  
 });
 const planeMaterial2 = new THREE.MeshBasicMaterial({
   color: "blue",
-  // side: THREE.DoubleSide,
+  
 });
 
 const planeMaterial3 = new THREE.MeshBasicMaterial({
   color: "green",
-  // side: THREE.DoubleSide,
+  
 });
 
 const plane1 = new THREE.Mesh(planeGeometry, planeMaterial1);
@@ -125,11 +125,10 @@ loader.load("./models/Test.glb", function (gltf) {
   scene.add(model);
 });
 
+
+
+/* point position */
 const debugPointPosition = gui.addFolder("Point Position");
-
-
-
-
 const points = [
 
 
@@ -156,13 +155,23 @@ const points = [
     {
       position: new THREE.Vector3(0, 0.03, -1.58) ,
       element: document.querySelector(".WhoAmI"),
-    }
+    },
+    {
+      position: new THREE.Vector3(0, 0, -3.46) ,
+      element: document.querySelector(".work1"),
+    },
+    {
+      position: new THREE.Vector3(0, 0, -4.21) ,
+      element: document.querySelector(".work2"),
+    },
+    
+    
 
 ];
 
 
-debugPointPosition.add(points[5].position, "y").min(-10).max(10).step(0.01);
-debugPointPosition.add(points[5].position, "z").min(-10).max(10).step(0.01);
+debugPointPosition.add(points[7].position, "y").min(-10).max(10).step(0.01);
+debugPointPosition.add(points[7].position, "z").min(-10).max(10).step(0.01);
 
 const sizes = {
   width: window.innerWidth,
@@ -188,8 +197,7 @@ cameraFolder.add(camera.position, "y").min(0).max(10).step(0.01);
 cameraFolder.add(camera.position, "z").min(-20).max(10).step(0.01);
 scene.add(camera);
 
-// const controls = new OrbitControls(camera, canvas);
-// controls.enableDamping = true;
+
 
 const parameters = {
   hemisphereLight: {
@@ -199,6 +207,8 @@ const parameters = {
   },
 };
 
+
+/* hemisphere light */
 const hemisphereLight = new THREE.HemisphereLight(parameters.hemisphereLight.color1, parameters.hemisphereLight.color2, parameters.hemisphereLight.intensity);
 scene.add(hemisphereLight);
 
@@ -210,6 +220,8 @@ gui.addColor(parameters.hemisphereLight, "color2").onChange((value) => {
   hemisphereLight.groundColor.set(value);
 });
 
+
+/* renderer */
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
   antialias: true,
@@ -220,8 +232,10 @@ renderer.render(scene, camera);
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+
+
 // Function to update HTML element positions
-function updateElementPositions() {
+function updatePointsPositions() {
     if (!sceneReady) return;
     
     for (const point of points) {
@@ -237,6 +251,7 @@ function updateElementPositions() {
     }
 }
 
+/* resize */
 window.addEventListener("resize", () => {
     // Update sizes
     sizes.width = window.innerWidth;
@@ -251,11 +266,12 @@ window.addEventListener("resize", () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     
     // Update HTML element positions
-    updateElementPositions();
+    updatePointsPositions();
     
     renderer.render(scene, camera);
 });
 
+/* animate */
 const clock = new THREE.Clock();
 function animate() {
   const elapsedTime = clock.getElapsedTime();
@@ -263,7 +279,7 @@ function animate() {
       earth.rotation.z = elapsedTime * 0.5;
     }
     if (sceneReady) {
-        updateElementPositions();
+        updatePointsPositions();
     }
     
     renderer.render(scene, camera);
@@ -272,26 +288,34 @@ function animate() {
 
 animate();
 
+
+function updateElementPositions() {
+  renderer.render(scene, camera);
+  updatePointsPositions();
+}
+
 // Handle mouse wheel on desktop
 window.addEventListener("wheel", (event) => {
   // Calculate target position
   const targetZ = camera.position.z - event.deltaY * 0.008;
-  if(targetZ < -8.62){
-    return;
-  }
-  if(targetZ > 0){
+  if(targetZ < -8.62 || targetZ > 0){
     return;
   }
   // Animate to the target position
   gsap.to(camera.position, {
     z: targetZ,
-    duration: 1,
-    ease: "power1.Out",
+    duration:1,
+    ease: "sine.out",
+    onUpdate: () => {
+      updateElementPositions();
+    },
   });
 });
 
+/* touch */
 let touchStartY = 0;
 let touchEndY = 0;
+
 
 window.addEventListener("touchstart", (event) => {
   touchStartY = event.touches[0].clientY;
@@ -303,12 +327,18 @@ window.addEventListener("touchmove", (event) => {
   
   // Calculate target position
   const targetZ = camera.position.z - deltaY * 0.008;
+  if(targetZ < -8.62 || targetZ > 0){
+    return;
+  }
   
   // Animate to the target position
   gsap.to(camera.position, {
     z: targetZ,
     duration: 1,
-    ease: "power1.Out",
+    ease: "sine.out",
+    onUpdate: () => {
+      updateElementPositions();
+    },
   });
   
   // Update start position for next move

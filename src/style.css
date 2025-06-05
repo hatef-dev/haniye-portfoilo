@@ -25,7 +25,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  position: fixed;
+  position: relative;
 }
 
 canvas {
@@ -40,14 +40,14 @@ canvas {
 /* first section */
 
 .wow-icon {
-  position: fixed;
+  position: absolute;
 
   z-index: 1;
 }
 
 .scrollDownButton {
-  position: fixed;
-
+  position: absolute;
+  width: 130px;
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -58,7 +58,7 @@ canvas {
 }
 
 .SectionTitle {
-  position: fixed;
+  position: absolute;
   z-index: 1;
   font-family: "Rock Salt", cursive;
   font-size: 10px;
@@ -92,7 +92,7 @@ canvas {
 /* button */
 
 .buttonContainer {
-  position: fixed;
+  position: absolute;
 }
 .btn {
   font-family: "Roboto", sans-serif;
@@ -164,16 +164,16 @@ canvas {
 
 /* second section */
 .helloIcon {
-  position: fixed;
+  position: absolute;
   z-index: 1;
 }
 
 .WhoAmI {
-  position: fixed;
+  position: absolute;
   z-index: 1;
   color: #000;
   font-family: "Rock Salt", cursive;
-  width: 500px;
+  width: 600px;
   height: 300px;
   font-size: 0.55em;
 }
@@ -199,3 +199,51 @@ canvas {
 
 /* third section */
 
+.work {
+  width: 300px;
+}
+
+.workTitle {
+  font-family: "Poiret One", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 40px;
+  color: #000;
+}
+
+.workParagraph {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+}
+
+.work1 {
+  position: absolute;
+  z-index: 1;
+}
+
+.work2 {
+  position: absolute;
+  z-index: 1;
+}
+
+.work3 {
+  position: absolute;
+  z-index: 1;
+}
+
+
+
+@media (max-width: 768px) {
+  .work {
+    width: 230px;
+  }
+  .WhoAmI {
+    width: 460px;
+  }
+  .scrollDownButton {
+    width: 100px;
+  }
+  
+}
