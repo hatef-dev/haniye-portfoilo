@@ -9,6 +9,7 @@ import gsap from "gsap";
 const gui = new GUI();
 const scene = new THREE.Scene();
 const loadingBarElement = document.querySelector(".loading-bar");
+const container = document.querySelector(".container");
 let sceneReady = false;
 const loadingManager = new THREE.LoadingManager(
   // Loaded
@@ -29,6 +30,7 @@ const loadingManager = new THREE.LoadingManager(
     
     window.setTimeout(() => {
       sceneReady = true;
+      container.style.opacity =1;
     }, 1500);
   },
   
@@ -37,6 +39,7 @@ const loadingManager = new THREE.LoadingManager(
     // Calculate the progress and update the loadingBarElement
     const progressRatio = itemsLoaded / itemsTotal;
     loadingBarElement.style.transform = `scaleX(${progressRatio})`;
+    container.style.opacity =0;
   }
 );
 // loaders
@@ -133,45 +136,48 @@ const points = [
 
 
     {
-        position: new THREE.Vector3(0, -0.19, -0.35),
+        position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.19, -0.35) : new THREE.Vector3(0, -0.37, -0.31),
         element: document.querySelector(".SectionTitle"),
     },
     {
-      position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.19, -0.6) : new THREE.Vector3(0, -0.19, -0.65),
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.19, -0.6) : new THREE.Vector3(0, -0.37, -0.6),
       element: document.querySelector(".scrollDownButton"),
     },
     {
-      position: new THREE.Vector3(0, 0.15, 0.36) ,
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, 0.15, 0.36) : new THREE.Vector3(0, -0.04, 0.26) ,
       element: document.querySelector(".wow-icon"),
     },
     {
-      position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.3, -0.35) : new THREE.Vector3(0, -0.3, -0.34) ,
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.3, -0.35) : new THREE.Vector3(0, -0.49, -0.3) ,
       element: document.querySelector(".buttonContainer"),
     },
     {
-      position: new THREE.Vector3(0, 0.13, -1.82) ,
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, 0.13, -1.82) : new THREE.Vector3(0, -0.04, -1.82) ,
       element: document.querySelector(".helloIcon"),
     },
     {
-      position: new THREE.Vector3(0, 0.03, -1.58) ,
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, 0.03, -1.58) : new THREE.Vector3(0, -0.14, -1.58) ,
       element: document.querySelector(".WhoAmI"),
     },
     {
-      position: new THREE.Vector3(0, 0, -3.46) ,
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, 0, -3.46) : new THREE.Vector3(0, -0.19, -3.46) ,
       element: document.querySelector(".work1"),
     },
     {
-      position: new THREE.Vector3(0, 0, -4.21) ,
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, 0, -4.21) : new THREE.Vector3(0, -0.19, -4.21) ,
       element: document.querySelector(".work2"),
     },
-    
+    {
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, 0, -4.96) : new THREE.Vector3(0, -0.19, -4.96) ,
+      element: document.querySelector(".work3"),
+    },
     
 
 ];
 
 
-debugPointPosition.add(points[7].position, "y").min(-10).max(10).step(0.01);
-debugPointPosition.add(points[7].position, "z").min(-10).max(10).step(0.01);
+debugPointPosition.add(points[6].position, "y").min(-10).max(10).step(0.01);
+debugPointPosition.add(points[6].position, "z").min(-10).max(10).step(0.01);
 
 const sizes = {
   width: window.innerWidth,
@@ -187,7 +193,11 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 // Adjust initial camera position based on screen size
-camera.position.x = 1.37;
+if(window.innerWidth > 768){
+  camera.position.x = 1.37;
+}else{
+  camera.position.x = 2;
+}
 camera.position.y = 0.3;
 camera.position.z = -0.15;
 camera.rotation.y = Math.PI / 2;
@@ -294,28 +304,33 @@ function updateElementPositions() {
   updatePointsPositions();
 }
 
-// Handle mouse wheel on desktop
+let isScrolling = false;
+
 window.addEventListener("wheel", (event) => {
-  // Calculate target position
-  const targetZ = camera.position.z - event.deltaY * 0.008;
-  if(targetZ < -8.62 || targetZ > 0){
+  if (isScrolling) return; // جلوی اجرای چندباره رو می‌گیریم
+  isScrolling = true;
+
+  const targetZ = camera.position.z - event.deltaY * 0.02;
+  if (targetZ < -8.62 || targetZ > 1) {
+    isScrolling = false;
     return;
   }
-  // Animate to the target position
+
   gsap.to(camera.position, {
     z: targetZ,
-    duration:1,
+    duration: 1,
     ease: "sine.out",
     onUpdate: () => {
       updateElementPositions();
     },
+    onComplete: () => {
+      isScrolling = false; // دوباره اجازه اسکرول می‌ده
+    }
   });
 });
 
-/* touch */
 let touchStartY = 0;
 let touchEndY = 0;
-
 
 window.addEventListener("touchstart", (event) => {
   touchStartY = event.touches[0].clientY;
@@ -324,30 +339,25 @@ window.addEventListener("touchstart", (event) => {
 window.addEventListener("touchmove", (event) => {
   touchEndY = event.touches[0].clientY;
   const deltaY = touchStartY - touchEndY;
-  
-  // Calculate target position
-  const targetZ = camera.position.z - deltaY * 0.008;
-  if(targetZ < -8.62 || targetZ > 0){
-    return;
-  }
-  
-  // Animate to the target position
+
+  const targetZ = camera.position.z - deltaY * 0.02;
+  if (targetZ < -8.62 || targetZ > 1) return;
+
+  gsap.killTweensOf(camera.position); // جلوگیری از انیمیشن‌های تکراری
+
   gsap.to(camera.position, {
     z: targetZ,
     duration: 1,
     ease: "sine.out",
     onUpdate: () => {
       updateElementPositions();
-    },
+    }
   });
-  
-  // Update start position for next move
+
+  // برای اینکه حرکت بعدی درست محاسبه بشه
   touchStartY = touchEndY;
 });
 
-// Prevent default touch behavior
 document.addEventListener('touchmove', function(e) {
   e.preventDefault();
 }, { passive: false });
-
-
