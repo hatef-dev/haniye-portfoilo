@@ -201,7 +201,10 @@ canvas {
 }
 
 /* second section */
-
+.monaliza-icon {
+  position: absolute;
+  z-index: 1;
+}
 /* third section */
 
 .work {
@@ -258,7 +261,9 @@ canvas {
     width: 150px;
     font-size: 7px;
   }
-  
+  .monaliza-icon svg {
+    width: 80px;
+  }
   .btn {
     font-size: 8px;
     padding:10px 18px;
@@ -266,6 +271,9 @@ canvas {
   }
   .helloIcon  svg{
     width: 60px;
+  }
+  .lamp-icon svg{
+    width: 50px;
   }
   .WhoAmI {
     width: 300px;

@@ -160,6 +160,10 @@ const points = [
       element: document.querySelector(".WhoAmI"),
     },
     {
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.17, -2) : new THREE.Vector3(0, -0.28, -2.03) ,
+      element: document.querySelector(".monaliza-icon"),
+    },
+    {
       position: window.innerWidth > 768 ? new THREE.Vector3(0, 0, -3.46) : new THREE.Vector3(0, -0.19, -3.46) ,
       element: document.querySelector(".work1"),
     },
@@ -171,13 +175,16 @@ const points = [
       position: window.innerWidth > 768 ? new THREE.Vector3(0, 0, -4.96) : new THREE.Vector3(0, -0.19, -4.96) ,
       element: document.querySelector(".work3"),
     },
-    
+    {
+      position: window.innerWidth > 768 ? new THREE.Vector3(0, -0.2, -5.28) : new THREE.Vector3(0, -0.37, -5.3) ,
+      element: document.querySelector(".lamp-icon"),
+    },
 
 ];
 
 
-debugPointPosition.add(points[6].position, "y").min(-10).max(10).step(0.01);
-debugPointPosition.add(points[6].position, "z").min(-10).max(10).step(0.01);
+debugPointPosition.add(points[10].position, "y").min(-10).max(10).step(0.01);
+debugPointPosition.add(points[10].position, "z").min(-10).max(10).step(0.01);
 
 const sizes = {
   width: window.innerWidth,
