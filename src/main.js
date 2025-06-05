@@ -286,7 +286,7 @@ window.addEventListener("wheel", (event) => {
   gsap.to(camera.position, {
     z: targetZ,
     duration: 1,
-    ease: "power2.out",
+    ease: "power1.Out",
   });
 });
 
@@ -308,7 +308,7 @@ window.addEventListener("touchmove", (event) => {
   gsap.to(camera.position, {
     z: targetZ,
     duration: 1,
-    ease: "power2.out",
+    ease: "power1.Out",
   });
   
   // Update start position for next move
