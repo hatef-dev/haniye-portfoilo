@@ -15,9 +15,9 @@ void main() {
     vec4 reflection = texture2DProj(tDiffuse, coord);
     
     // Sample textures
-    vec2 repeatedUV = vUv * textureRepeat;
-    vec4 colorTex = texture2D(colorTexture, repeatedUV);
-    vec4 heightTex = texture2D(heightTexture, repeatedUV);
+    // vec2 repeatedUV = vUv * textureRepeat;
+    vec4 colorTex = texture2D(colorTexture, vUv);
+    vec4 heightTex = texture2D(heightTexture, vUv);
     
     // Apply Gaussian blur
     vec4 blurred = vec4(0.0);

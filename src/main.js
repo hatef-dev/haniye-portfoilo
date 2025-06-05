@@ -49,10 +49,7 @@ const loader = new GLTFLoader(loadingManager);
 const textureLoader = new THREE.TextureLoader(loadingManager);
 const textureFloor = textureLoader.load("./texture/Wall_Bake.jpg");
 const textureFloor2 = textureLoader.load("./texture/Wall_Bake1.jpg");
-const textureFloor3 = textureLoader.load("./texture/wood1.jpg");
-textureFloor3.wrapS = THREE.MirroredRepeatWrapping;
-textureFloor3.wrapT = THREE.MirroredRepeatWrapping;
-textureFloor3.mapping = THREE.EquirectangularReflectionMapping;
+
 const canvas = document.querySelector("#webgl");
 
 /**
@@ -122,30 +119,14 @@ const parameters2 = {
   color: 0x373739,
   clipBias: 0.001,
   height: 0.09,
-  tDiffuse: textureFloor3,
-  reflectionStrength: 0.12,
+  tDiffuse: textureFloor2,
+  reflectionStrength: 0.5,
 };
 
-let model;
-
-let earth;
-loader.load("./models/Test.glb", function (gltf) {
-  model = gltf.scene;
-  model.traverse((child) => {
-    if (child instanceof THREE.Mesh) {
-      if (child.name === "pSphere1") {
-        earth = child;
-      }
-    }
-  });
-  scene.add(model);
-});
 const floorGeometry = new THREE.PlaneGeometry(1, 1);
 const floor = new Reflector(floorGeometry, {
   clipBias: parameters2.clipBias,
-  textureWidth: 1024,
-  color: "white",
-  textureHeight: 1024,
+  
   shader: {
     precision: "highp",
     uniforms: {
@@ -156,9 +137,9 @@ const floor = new Reflector(floorGeometry, {
       textureMatrix: { value: new THREE.Matrix4() },
       blurAmount: { value: parameters2.blurAmount },
       blurRadius: { value: parameters2.blurRadius },
-      colorTexture: { value: textureFloor3},
-      heightTexture: { value: textureFloor3},
-      textureRepeat: { value: new THREE.Vector2(10, 10) } 
+      colorTexture: { value: textureFloor2},
+      heightTexture: { value: textureFloor2},
+      // textureRepeat: { value: new THREE.Vector2(10, 10) } 
     },
     vertexShader: vertex,
     fragmentShader: fragment,
@@ -167,11 +148,37 @@ const floor = new Reflector(floorGeometry, {
 
 const reflectionStrength = gui.addFolder("Reflection Strength");
 reflectionStrength.add(floor.material.uniforms.reflectionStrength, "value").min(0).max(1).step(0.01);
-scene.add(floor);
+// scene.add(floor);
 
 floor.rotation.x = -Math.PI / 2;
 floor.position.set(0.520, 0.03, -4.484);
 floor.scale.set(2.620, 12.570, 1.000)
+
+let model;
+
+
+let earth;
+loader.load("./models/Test.glb", function (gltf) {
+  model = gltf.scene;
+  model.traverse((child) => {
+    if (child instanceof THREE.Mesh) {
+      if (child.name === "pSphere1") {
+        earth = child;
+      }
+      if(child.name === "Floor001"){
+        child = floor
+        // child.material = floorMaterial;
+        // child.position.copy(floorPosition);
+        // child.scale.copy(floorScale);
+      }
+    }
+  });
+  scene.add(model);
+});
+
+
+
+
 
 
 
