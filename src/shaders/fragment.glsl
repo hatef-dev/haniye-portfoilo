@@ -15,7 +15,7 @@ void main() {
     vec4 reflection = texture2DProj(tDiffuse, coord);
     
     // Sample textures
-    // vec2 repeatedUV = vUv * textureRepeat;
+    vec2 repeatedUV = vUv * textureRepeat;
     vec4 colorTex = texture2D(colorTexture, vUv);
     vec4 heightTex = texture2D(heightTexture, vUv);
     

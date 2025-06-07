@@ -178,7 +178,7 @@ canvas {
   z-index: 1;
   color: #000;
   font-family: "Rock Salt", cursive;
-  width: 600px;
+  width: 500px;
   height: 300px;
   font-size: 0.55em;
 }
@@ -204,11 +204,15 @@ canvas {
 .monaliza-icon {
   position: absolute;
   z-index: 1;
+
 }
+.monaliza-icon svg{
+  width: 150px;
+} 
 /* third section */
 
 .work {
-  width: 300px;
+  width: 250px;
 }
 
 .workTitle {

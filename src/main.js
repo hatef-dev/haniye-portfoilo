@@ -49,6 +49,7 @@ const loader = new GLTFLoader(loadingManager);
 const textureLoader = new THREE.TextureLoader(loadingManager);
 const textureFloor = textureLoader.load("./texture/Wall_Bake.jpg");
 const textureFloor2 = textureLoader.load("./texture/Wall_Bake1.jpg");
+const textureFloor3 = textureLoader.load("./texture/wood1.jpg");
 
 const canvas = document.querySelector("#webgl");
 
@@ -119,7 +120,7 @@ const parameters2 = {
   color: 0x373739,
   clipBias: 0.001,
   height: 0.09,
-  tDiffuse: textureFloor2,
+  tDiffuse: textureFloor3,
   reflectionStrength: 0.5,
 };
 
@@ -137,9 +138,9 @@ const floor = new Reflector(floorGeometry, {
       textureMatrix: { value: new THREE.Matrix4() },
       blurAmount: { value: parameters2.blurAmount },
       blurRadius: { value: parameters2.blurRadius },
-      colorTexture: { value: textureFloor2},
-      heightTexture: { value: textureFloor2},
-      // textureRepeat: { value: new THREE.Vector2(10, 10) } 
+      colorTexture: { value: textureFloor3},
+      heightTexture: { value: textureFloor3},
+      textureRepeat: { value: new THREE.Vector2(10, 10) } 
     },
     vertexShader: vertex,
     fragmentShader: fragment,
@@ -147,8 +148,10 @@ const floor = new Reflector(floorGeometry, {
 });
 
 const reflectionStrength = gui.addFolder("Reflection Strength");
+
 reflectionStrength.add(floor.material.uniforms.reflectionStrength, "value").min(0).max(1).step(0.01);
-// scene.add(floor);
+gui.add(floor.position, "z").min(-10).max(10).step(0.01);
+scene.add(floor);
 
 floor.rotation.x = -Math.PI / 2;
 floor.position.set(0.520, 0.03, -4.484);
@@ -164,12 +167,6 @@ loader.load("./models/Test.glb", function (gltf) {
     if (child instanceof THREE.Mesh) {
       if (child.name === "pSphere1") {
         earth = child;
-      }
-      if(child.name === "Floor001"){
-        child = floor
-        // child.material = floorMaterial;
-        // child.position.copy(floorPosition);
-        // child.scale.copy(floorScale);
       }
     }
   });
